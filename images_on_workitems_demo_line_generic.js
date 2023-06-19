@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Images on DEVOPS - DEMO SAMPLE.FLOW & FLOW.SYSTEM
 // @namespace    https://makeworkflow.de
-// @version      1.0
+// @version      1.1
 // @description  Inserts an image from a specified Workitemfield into a the specific workitem on a the kanban board page from flow.system / sample.flow
 // @match        https://dev.azure.com/*/*/_boards/board/t/*
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js
@@ -58,11 +58,11 @@
                     img.src = imageURL;
                     img.width = 75;
                     img.height = 75;
-                    img.style.marginLeft = "auto";
+                    img.style.marginRight = "auto";
                     img.className = "workItemPictures";
 
                     // Append the img element to the correct WorkItem Element
-                    jNode.parent().parent().append(img);
+                    jNode.parent().parent().prev().children(':first').prepend(img);
                     // hide the imageURL field label and value
                     jNode.parent().hide();
                 }
