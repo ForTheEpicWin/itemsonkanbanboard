@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Images on DEVOPS - DEMO SAMPLE.FLOW & FLOW.SYSTEM
 // @namespace    https://makeworkflow.de
-// @version      1.1
+// @version      1.3
 // @description  Inserts an image from a specified Workitemfield into a the specific workitem on a the kanban board page from flow.system / sample.flow
 // @match        https://dev.azure.com/*/*/_boards/board/t/*
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js
@@ -135,7 +135,7 @@
 
         images.each(function() {
             var image = $(this);
-            var imageField = image.parent().find(imageFieldLabel);
+            var imageField = image.parent().parent().parent().find(imageFieldLabel);
             var imageURL = imageField.next(imageFieldParent).find(imageFieldValueElement).text();
 
             // if imagefield is empty remove old picture
