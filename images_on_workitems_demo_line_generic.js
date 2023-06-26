@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Images on DEVOPS - DEMO SAMPLE.FLOW & FLOW.SYSTEM
 // @namespace    https://makeworkflow.de
-// @version      1.3
+// @version      2.0
 // @description  Inserts an image from a specified Workitemfield into a the specific workitem on a the kanban board page from flow.system / sample.flow
 // @match        https://dev.azure.com/*/*/_boards/board/t/*
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js
@@ -11,7 +11,6 @@
 // ==/UserScript==
 
 (function() {
-
     // ON IMAGE FIELD FOUND
     let imageFieldLabel = 'div.label.text-ellipsis:contains("IMAGE URL")';
     let imageFieldParent = 'div.editable-field.value.not-editing';
@@ -78,20 +77,13 @@
     // ON IMAGE FIELD UPDATE
     'use strict';
     function onImageFieldUpdate(jNode) {
-        // FORCE UPDATE
+        // FORCE UPDATE BEFORE SHOWING FIELDS
         autoUpdate();
 
         // get all buttons
         var buttons = $('button');
         // get initial imageURL value
         var initialImageURL = jNode.attr('value');
-
-
-        // check if image field is same as connected image
-        // GET WORKITEM ID OF OPEN ITEM
-        // var onOpenItemID = $(onOpenItemWorkItemIDElement).text();
-        // console.log(onOpenItemID)
-        // if field is different from workitem info, remove old image
 
         //updated picture and give feedback to user
         jNode.on('change', function() {
@@ -130,7 +122,7 @@
     waitForKeyElements(onOpenItemImageFieldElement, onImageFieldUpdate);
 
     function autoUpdate(){
-    // check if image exists and image is there, remove image
+        // check if image exists and image is there, remove image
         var images = $('img.workItemPictures');
 
         images.each(function() {
@@ -148,9 +140,109 @@
         });
     }
 
-    // Reload all the image and its fields every 5 minute
+//         function checkElementExistence() {
+//             // Select the element whose parent you want to observe
+//             const targetElements = $('div.card-flag');
+
+//             if ( targetElements.length > 0) {
+//                 console.log("yes");
+//                 const targetElements = document.querySelectorAll('div.card-flag');
+//                 targetElements.forEach(targetElement => {
+//                     // Target element found, execute your script logic here
+//                     console.log("TARGET ELEMENT:", targetElement);
+//                     let headerColor = getComputedStyle(targetElement.parentNode.parentNode.parentNode.previousElementSibling).backgroundColor;
+//                     let flagColor = getComputedStyle(targetElement).backgroundColor
+
+//                     console.log("PARENT color:", headerColor);
+//                     console.log("flag color:", flagColor);
+//                     targetElement.style.backgroundColor = headerColor;
+
+//                     // Create a new MutationObserver instance
+//                     var observer = new MutationObserver(function(mutationsList) {
+//                         // Iterate over each mutation
+//                         for (const mutation of mutationsList) {
+//                             // Check if the mutation type is 'childList'
+//                             if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+//                                 const parentColor = getComputedStyle(targetElement.parentNode.parentNode.parentNode.previousElementSibling).backgroundColor;
+
+//                                 // if color parent has changed)
+//                                 if (parentColor != flagColor) {
+//                                     console.log('Set as same color');
+//                                     targetElement.style.backgroundColor = parentColor;
+//                                 }
+//                             }
+//                         }
+//                     });
+//                     // Configure the observer to watch for changes to the target element's parent
+//                     const config = {
+//                         attributes: true,
+//                         attributeFilter: ['style'],
+//                     };
+
+//                     // Start observing the target element's parent
+//                     // observer.observe(targetElement.parentNode.parentNode.parentNode.previousElementSibling, config);
+//                     observer.observe(targetElement, config);
+//                 });
+//             } else {
+//                 // Target element not found, retry after a delay
+//                 setTimeout(checkElementExistence, 250); // Retry after 1 second (adjust the delay as needed)
+//             }
+//         }
+
+    function setChildrenColor(){
+        const headerElements = document.querySelectorAll('.flex-column.kanban-board-row.expanded');
+        const flagCardColors = document.querySelectorAll('div.card-flag');
+
+        if (headerElements.length > 0 && flagCardColors.length > 0 ) {
+            // set all colors correct ONCE
+            flagCardColors.forEach(flagCardColor => {
+                // Target element found
+                const headerColor = getComputedStyle(flagCardColor.parentNode.parentNode.parentNode.previousElementSibling).backgroundColor;
+                flagCardColor.style.backgroundColor = headerColor;
+            });
+
+            // Create a new MutationObserver
+            headerElements.forEach(targetElement => {
+                const observer = new MutationObserver(function(mutationsList) {
+                    for (let mutation of mutationsList) {
+                        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                            const filteredNodes = Array.from(mutation.addedNodes).filter(node => node.classList.contains('wit-card'));
+                            if (filteredNodes.length > 0) {
+                                handleChildAdded(filteredNodes);
+                            }
+                        }
+                    }
+                });
+
+                // Configure and start the observer
+                const observerConfig = {
+                    childList: true,
+                    subtree: true
+                };
+                observer.observe(targetElement, observerConfig);
+
+                // Handle child added event
+                function handleChildAdded(addedNodes) {
+                    addedNodes.forEach(function(node) {
+                        if (node instanceof HTMLElement) {
+                            const headerColor = getComputedStyle(node.firstElementChild.parentNode.parentNode.parentNode.previousElementSibling).backgroundColor;
+                            node.firstElementChild.style.backgroundColor = headerColor;
+                        }
+                    });
+                };
+            });
+        } else {
+            // Target element not found, retry after a delay
+            setTimeout(setChildrenColor, 250);
+        }
+    }
+
+    // Reload all the image and its fields every minute
     setInterval(function() {
         console.log("Auto Updated pictures on workitems");
         autoUpdate();
-    }, 5 * 60 * 1000);
+    }, 1 * 60 * 1000);
+
+    setChildrenColor();
 })();
+
