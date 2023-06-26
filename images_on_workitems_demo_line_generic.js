@@ -194,12 +194,16 @@
         const flagCardColors = document.querySelectorAll('div.card-flag');
 
         if (headerElements.length > 0 && flagCardColors.length > 0 ) {
-            // set all colors correct ONCE
-            flagCardColors.forEach(flagCardColor => {
-                // Target element found
-                const headerColor = getComputedStyle(flagCardColor.parentNode.parentNode.parentNode.previousElementSibling).backgroundColor;
-                flagCardColor.style.backgroundColor = headerColor;
-            });
+            if (doOnce){
+                // set all colors correct ONCE
+                flagCardColors.forEach(flagCardColor => {
+                    // Target element found
+                    const headerColor = getComputedStyle(flagCardColor.parentNode.parentNode.parentNode.previousElementSibling).backgroundColor;
+                    flagCardColor.style.backgroundColor = headerColor;
+                });
+                doOnce = false;
+                console.log(doOnce);
+            }
 
             // Create a new MutationObserver
             headerElements.forEach(targetElement => {
@@ -241,8 +245,9 @@
     setInterval(function() {
         console.log("Auto Updated pictures on workitems");
         autoUpdate();
-    }, 1 * 60 * 1000);
+    }, 1 * 30 * 1000);
 
+    let doOnce = true;
     setChildrenColor();
 })();
 
