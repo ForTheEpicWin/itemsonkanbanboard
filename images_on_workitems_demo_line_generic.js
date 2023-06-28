@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Images on DEVOPS - DEMO SAMPLE.FLOW & FLOW.SYSTEM
 // @namespace    https://makeworkflow.de
-// @version      2.0
+// @version      2.1
 // @description  Inserts an image from a specified Workitemfield into a the specific workitem on a the kanban board page from flow.system / sample.flow
 // @match        https://dev.azure.com/*/*/_boards/board/t/*
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js
@@ -140,55 +140,6 @@
         });
     }
 
-//         function checkElementExistence() {
-//             // Select the element whose parent you want to observe
-//             const targetElements = $('div.card-flag');
-
-//             if ( targetElements.length > 0) {
-//                 console.log("yes");
-//                 const targetElements = document.querySelectorAll('div.card-flag');
-//                 targetElements.forEach(targetElement => {
-//                     // Target element found, execute your script logic here
-//                     console.log("TARGET ELEMENT:", targetElement);
-//                     let headerColor = getComputedStyle(targetElement.parentNode.parentNode.parentNode.previousElementSibling).backgroundColor;
-//                     let flagColor = getComputedStyle(targetElement).backgroundColor
-
-//                     console.log("PARENT color:", headerColor);
-//                     console.log("flag color:", flagColor);
-//                     targetElement.style.backgroundColor = headerColor;
-
-//                     // Create a new MutationObserver instance
-//                     var observer = new MutationObserver(function(mutationsList) {
-//                         // Iterate over each mutation
-//                         for (const mutation of mutationsList) {
-//                             // Check if the mutation type is 'childList'
-//                             if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-//                                 const parentColor = getComputedStyle(targetElement.parentNode.parentNode.parentNode.previousElementSibling).backgroundColor;
-
-//                                 // if color parent has changed)
-//                                 if (parentColor != flagColor) {
-//                                     console.log('Set as same color');
-//                                     targetElement.style.backgroundColor = parentColor;
-//                                 }
-//                             }
-//                         }
-//                     });
-//                     // Configure the observer to watch for changes to the target element's parent
-//                     const config = {
-//                         attributes: true,
-//                         attributeFilter: ['style'],
-//                     };
-
-//                     // Start observing the target element's parent
-//                     // observer.observe(targetElement.parentNode.parentNode.parentNode.previousElementSibling, config);
-//                     observer.observe(targetElement, config);
-//                 });
-//             } else {
-//                 // Target element not found, retry after a delay
-//                 setTimeout(checkElementExistence, 250); // Retry after 1 second (adjust the delay as needed)
-//             }
-//         }
-
     function setChildrenColor(){
         const headerElements = document.querySelectorAll('.flex-column.kanban-board-row.expanded');
         const flagCardColors = document.querySelectorAll('div.card-flag');
@@ -198,8 +149,12 @@
                 // set all colors correct ONCE
                 flagCardColors.forEach(flagCardColor => {
                     // Target element found
-                    const headerColor = getComputedStyle(flagCardColor.parentNode.parentNode.parentNode.previousElementSibling).backgroundColor;
-                    flagCardColor.style.backgroundColor = headerColor;
+                    const headerPath = flagCardColor.parentNode.parentNode.parentNode.previousElementSibling
+                    // only set color if exists
+                    if (headerPath) {
+                        const headerColor = getComputedStyle(headerPath).backgroundColor;
+                        flagCardColor.style.backgroundColor = headerColor;
+                    }
                 });
                 doOnce = false;
                 console.log(doOnce);
@@ -245,6 +200,12 @@
     setInterval(function() {
         console.log("Auto Updated pictures on workitems");
         autoUpdate();
+    }, 1 * 60 * 1000);
+
+    // Reload all every hour
+    setInterval(function() {
+        console.log("Reload whole page");
+        location.reload(true)
     }, 1 * 30 * 1000);
 
     let doOnce = true;
