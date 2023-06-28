@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Images on DEVOPS - DEMO SAMPLE.FLOW & FLOW.SYSTEM
 // @namespace    https://makeworkflow.de
-// @version      2.1
+// @version      2.2
 // @description  Inserts an image from a specified Workitemfield into a the specific workitem on a the kanban board page from flow.system / sample.flow
 // @match        https://dev.azure.com/*/*/_boards/board/t/*
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js
@@ -157,7 +157,6 @@
                     }
                 });
                 doOnce = false;
-                console.log(doOnce);
             }
 
             // Create a new MutationObserver
@@ -196,11 +195,11 @@
         }
     }
 
-    // Reload all the image and its fields every minute
+    // Reload all the image and its fields every 5 minutes
     setInterval(function() {
         console.log("Auto Updated pictures on workitems");
         autoUpdate();
-    }, 1 * 30 * 1000);
+    }, 5 * 60 * 1000);
 
     // Reload all every hour
     setInterval(function() {
