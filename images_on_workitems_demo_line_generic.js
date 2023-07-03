@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Images on DEVOPS - DEMO SAMPLE.FLOW & FLOW.SYSTEM
 // @namespace    https://makeworkflow.de
-// @version      2.2
+// @version      2.3
 // @description  Inserts an image from a specified Workitemfield into a the specific workitem on a the kanban board page from flow.system / sample.flow
 // @match        https://dev.azure.com/*/*/_boards/board/t/*
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js
@@ -19,6 +19,9 @@
     // ON IMAGE UPDATE
     let onOpenItemImageFieldElement = 'input#__bolt-IMAGE-URL-input';
     let onOpenItemWorkItemIDElement = 'div.flex-row.body-xl.padding-bottom-4.padding-right-8.flex-center';
+
+    // SET DATES TO LOCALE
+    let onOpenItemDates = 'time.bolt-time-item.white-space-nowrap';
 
     // TEST IF URL IS VALID IMAGE
     function testImageUrl(url) {
@@ -119,7 +122,18 @@
             }
         });
     }
+
     waitForKeyElements(onOpenItemImageFieldElement, onImageFieldUpdate);
+
+    // ON OPEN ITEM CHANGE DATES
+    'use strict';
+    function onOpenItemChangeDates(jNode) {
+        let datetimeValue = jNode.attr('datetime');
+        let dateTime = new Date(datetimeValue);
+        let correctFormat = dateTime.toLocaleString();
+        jNode.text(correctFormat).css('font-weight', 'bold');
+    }
+    waitForKeyElements(onOpenItemDates, onOpenItemChangeDates);
 
     function autoUpdate(){
         // check if image exists and image is there, remove image
@@ -195,19 +209,23 @@
         }
     }
 
+    function delayedFunction() {
+        // Code to be executed after 200ms
+        console.log('Delayed function executed!');
+    }
+
     // Reload all the image and its fields every 5 minutes
     setInterval(function() {
         console.log("Auto Updated pictures on workitems");
         autoUpdate();
-    }, 5 * 60 * 1000);
+    }, 1 * 5 * 1000);
 
     // Reload all every hour
     setInterval(function() {
         console.log("Reload whole page");
         location.reload(true)
-    }, 60 * 60 * 1000);
+    }, 30 * 60 * 1000);
 
     let doOnce = true;
     setChildrenColor();
 })();
-
