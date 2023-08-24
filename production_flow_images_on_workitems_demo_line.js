@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name         Images on DEVOPS - DEMO PRODUCTION FLOW
 // @namespace    https://makeworkflow.de
-// @version      1.2
+// @version      1.3
 // @description  Inserts an image from a specified Workitemfield into a the specific workitem on a the kanban board page from production.flow
 // @match        https://dev.azure.com/MWF-Demo-Line/production.flow
+// @match        https://dev.azure.com/MWF-Demo-Line/production.flow/_boards/board/t/*
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @copyright    MAKE WORK FLOW GmbH
