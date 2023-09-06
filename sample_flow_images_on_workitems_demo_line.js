@@ -9,6 +9,7 @@
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @copyright    MAKE WORK FLOW GmbH
 // @author       Feiko Bronsveld
+// @unwrap
 // ==/UserScript==
 
 (function() {
