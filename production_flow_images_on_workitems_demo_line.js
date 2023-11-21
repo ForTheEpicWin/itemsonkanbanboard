@@ -4,11 +4,11 @@
 // @version      1.6
 // @description  Inserts an image from a specified Workitemfield into a the specific workitem on a the kanban board page from production.flow
 // @match        https://dev.azure.com/MWF-Demo-Line/production.flow
-// @match        https://dev.azure.com/MWF-Development-Boards/Saminco-BLB
-// @match        https://dev.azure.com/MWF-Development-Boards/Saminco-BLB/_boards/board/t/*
 // @match        https://dev.azure.com/MWF-Demo-Line/production.flow/_boards/board/t/*
 // @match        https://dev.azure.com/Mondeox/Romania
 // @match        https://dev.azure.com/Mondeox/Romania/_boards/board/t/*
+// @match        https://dev.azure.com/MWF-Development-Boards/Saminco-BLB
+// @match        https://dev.azure.com/MWF-Development-Boards/Saminco-BLB/_boards/board/t/*
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @copyright    MAKE WORK FLOW GmbH
@@ -28,6 +28,9 @@
 
     // SET DATES TO LOCALE
     let onOpenItemDates = 'time.bolt-time-item.white-space-nowrap';
+
+    // SET small size to big size
+    let sizeField = 'div.label.text-ellipsis:contains("Size")';
 
     // TEST IF URL IS VALID IMAGE
     function testImageUrl(url) {
@@ -140,6 +143,13 @@
         jNode.text(correctFormat).css('font-weight', 'bold');
     }
     waitForKeyElements(onOpenItemDates, onOpenItemChangeDates);
+
+    // ON SMALL SIZE MAKE CAPITALS
+    'use strict';
+    function onSizeFieldFound(jNode) {
+        jNode.text("SIZE");
+    }
+    waitForKeyElements(sizeField, onSizeFieldFound);
 
     function autoUpdate(){
         // check if image exists and image is there, remove image
