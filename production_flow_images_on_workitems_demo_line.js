@@ -30,7 +30,7 @@
     let onOpenItemDates = 'time.bolt-time-item.white-space-nowrap';
 
     // SET small size to big size
-    let sizeField = 'div.label.text-ellipsis:contains("Size")';
+    let sizeField = 'div.label.text-ellipsis:contains("SIZE_")';
 
     // TEST IF URL IS VALID IMAGE
     function testImageUrl(url) {
