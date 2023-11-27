@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Images on DEVOPS - DEMO PRODUCTION FLOW
 // @namespace    https://makeworkflow.de
-// @version      1.8
+// @version      1.8.1
 // @description  Inserts an image from a specified Workitemfield into a the specific workitem on a the kanban board page from production.flow
 // @match        https://dev.azure.com/MWF-Demo-Line/production.flow
 // @match        https://dev.azure.com/MWF-Demo-Line/production.flow/_boards/board/t/*
@@ -31,7 +31,7 @@
 
     // SET small size to big size
     let sizeField = 'div.label.text-ellipsis:contains("SIZE_")';
-    let colorwayField = 'div.label.text-ellipsis:contains("CUSTOM07");
+    let colorwayField = 'div.label.text-ellipsis:contains("CUSTOM07")';
 
     // TEST IF URL IS VALID IMAGE
     function testImageUrl(url) {
