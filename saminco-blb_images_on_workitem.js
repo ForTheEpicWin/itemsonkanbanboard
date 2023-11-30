@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Images on DEVOPS - Saminco - BLB
 // @namespace    https://makeworkflow.de
-// @version      1
+// @version      1.1
 // @description  Inserts an image from a specified Workitemfield into a the specific workitem on a the kanban board page from production.flow
 // @match        https://dev.azure.com/MWF-Development-Boards/Saminco-BLB
 // @match        https://dev.azure.com/MWF-Development-Boards/Saminco-BLB/_boards/board/t/*
@@ -30,26 +30,45 @@
 
     // WORDS TO TRANSLATE 
     const translationDictionary = {
-        "SIZE_": "码数 || SIZE ", 
-        "ORDER QTY": "订单数量 || ORDER QTY"
+        "CUSTOM06": "拿麻鳄 || NAME",
+        "ORDER QTY": "订单数量 || ORDER QTY",
+        "SIZE_": "码数 || SIZE ",
+        "SIZE QTY": "码数/数量 || SIZE QTY",
+        "WIP QTY": "生产中的数量 || WIP QTY",
+        "ETD": "交货日期 || ETD"
     };
 
     // TRANSLATE FIELDS ON ITEM TO CHINESE
     'use strict';
     function fieldsOnCardFound(jNode) {
-        let text = jNode.textContent;
+        // change fields value to right aling
+        $('.value').css('text-align', 'right');
+        // change fields name to be long
+        $('.label').css('overflow', 'visible');
 
-        // Replace words based on the dictionary
-        for (const [key, value] of Object.entries(translationDictionary)) {
-            const regex = new RegExp(`\\b${key}\\b`, 'gi');
-            text = text.replace(regex, value);
-        }
-        // Update the div's text content
-        jNode.textContent = text;
+        // Find all 'div.label.text-ellipsis' elements within jNode
+        const labelDivs = jNode.find('div.label.text-ellipsis');
+
+        // Process each labelDiv
+        labelDivs.each(function() {
+            // Get current text of the div
+            let text = $(this).text();
+
+            // Ensure text is a string
+            if (typeof text === "string") {
+                // Replace words based on the dictionary
+                for (const [key, value] of Object.entries(translationDictionary)) {
+                    const regex = new RegExp(`\\b${key}\\b`, 'gi');
+                    text = text.replace(regex, value);
+                }
+
+                // Update the div's text content
+                $(this).text(text);
+            }
+        });
     }
     waitForKeyElements(fieldsOnCardDiv, fieldsOnCardFound);
 
-    
     // TEST IF URL IS VALID IMAGE
     function testImageUrl(url) {
         return new Promise(function(resolve, reject) {
