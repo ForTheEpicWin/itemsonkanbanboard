@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Images on DEVOPS - DEMO PRODUCTION FLOW
 // @namespace    https://makeworkflow.de
-// @version      1.8.1
+// @version      1.8.2
 // @description  Inserts an image from a specified Workitemfield into a the specific workitem on a the kanban board page from production.flow
 // @match        https://dev.azure.com/MWF-Demo-Line/production.flow
 // @match        https://dev.azure.com/MWF-Demo-Line/production.flow/_boards/board/t/*
@@ -31,7 +31,7 @@
 
     // SET small size to big size
     let sizeField = 'div.label.text-ellipsis:contains("SIZE_")';
-    let colorwayField = 'div.label.text-ellipsis:contains("CUSTOM07")';
+    let custom06 = 'div.label.text-ellipsis:contains("CUSTOM06")';
 
     // TEST IF URL IS VALID IMAGE
     function testImageUrl(url) {
@@ -154,10 +154,10 @@
 
     // ON SMALL SIZE MAKE CAPITALS
     'use strict';
-    function onCustom07field(jNode) {
-        jNode.text("COLORWAY");
+    function onCustom06field(jNode) {
+        jNode.text("NAME");
     }
-    waitForKeyElements(colorwayField, onCustom07field);
+    waitForKeyElements(custom06, onCustom06field);
 
     function autoUpdate(){
         // check if image exists and image is there, remove image
