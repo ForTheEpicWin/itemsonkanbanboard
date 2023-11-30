@@ -25,10 +25,19 @@
     // SET DATES TO LOCALE
     let onOpenItemDates = 'time.bolt-time-item.white-space-nowrap';
 
-    // SET small size to big size
-    let sizeField = 'div.label.text-ellipsis:contains("SIZE_")';
-    let custom06 = 'div.label.text-ellipsis:contains("CUSTOM06")';
+    // SET FIELDS DIV
+    let fields = 'div.fields';
 
+    // WORDS TO TRANSLATE 
+    const translationDictionary = {
+        "SIZE_": "码数 || SIZE ", 
+        "ORDER QTY": "订单数量 || ORDER QTY"
+    };
+
+    
+    
+
+    
     // TEST IF URL IS VALID IMAGE
     function testImageUrl(url) {
         return new Promise(function(resolve, reject) {
@@ -140,20 +149,6 @@
         jNode.text(correctFormat).css('font-weight', 'bold');
     }
     waitForKeyElements(onOpenItemDates, onOpenItemChangeDates);
-
-    // ON SMALL SIZE MAKE CAPITALS
-    'use strict';
-    function onSizeFieldFound(jNode) {
-        jNode.text("SIZE");
-    }
-    waitForKeyElements(sizeField, onSizeFieldFound);
-
-    // ON SMALL SIZE MAKE CAPITALS
-    'use strict';
-    function onCustom06field(jNode) {
-        jNode.text("NAME");
-    }
-    waitForKeyElements(custom06, onCustom06field);
 
     function autoUpdate(){
         // check if image exists and image is there, remove image
