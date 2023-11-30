@@ -25,8 +25,8 @@
     // SET DATES TO LOCALE
     let onOpenItemDates = 'time.bolt-time-item.white-space-nowrap';
 
-    // SET FIELDS DIV
-    let fields = 'div.fields';
+    // SET FIELDS ON CARD DIV
+    let fieldsOnCardDiv = 'div.fields';
 
     // WORDS TO TRANSLATE 
     const translationDictionary = {
@@ -34,8 +34,20 @@
         "ORDER QTY": "订单数量 || ORDER QTY"
     };
 
-    
-    
+    // TRANSLATE FIELDS ON ITEM TO CHINESE
+    'use strict';
+    function fieldsOnCardFound(jNode) {
+        let text = jNode.textContent;
+
+        // Replace words based on the dictionary
+        for (const [key, value] of Object.entries(translationDictionary)) {
+            const regex = new RegExp(`\\b${key}\\b`, 'gi');
+            text = text.replace(regex, value);
+        }
+        // Update the div's text content
+        jNode.textContent = text;
+    }
+    waitForKeyElements(fieldsOnCardDiv, fieldsOnCardFound);
 
     
     // TEST IF URL IS VALID IMAGE
