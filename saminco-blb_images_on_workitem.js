@@ -30,12 +30,12 @@
 
     // WORDS TO TRANSLATE 
     const translationDictionary = {
-        "CUSTOM08": "序列号 || S/N NUM",
-        "ORDER QTY": "订单数量 || ORDER QTY",
-        "SIZE_": "码数 || SIZE ",
-        "SIZE QTY": "码数/数量 || SIZE QTY",
-        "WIP QTY": "生产中的数量 || WIP QTY",
-        "ETD": "交货日期 || ETD"
+        "CUSTOM08": "序列号||S/N NUM",
+        "ORDER QTY": "订单数量||ORDER QTY",
+        "SIZE_": "码数||SIZE ",
+        "SIZE QTY": "码数/数量||SIZE QTY",
+        "WIP QTY": "生产中的数量||WIP QTY",
+        "ETD": "交货日期||ETD"
     };
 
     // TRANSLATE FIELDS ON ITEM TO CHINESE
