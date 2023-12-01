@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Images on DEVOPS - DEMO PRODUCTION FLOW
 // @namespace    https://makeworkflow.de
-// @version      1.8.3
+// @version      1.8.4
 // @description  Inserts an image from a specified Workitemfield into a the specific workitem on a the kanban board page from production.flow
 // @match        https://dev.azure.com/MWF-Demo-Line/production.flow
 // @match        https://dev.azure.com/MWF-Demo-Line/production.flow/_boards/board/t/*
@@ -240,13 +240,13 @@
     setInterval(function() {
         console.log("Auto Updated pictures on workitems");
         autoUpdate();
-    }, 1 * 5 * 1000);
+    }, 5 * 60 * 1000);
 
-    // Reload all every hour
+    // Reload all every 60 minutes / 1 hour
     setInterval(function() {
         console.log("Reload whole page");
         location.reload(true)
-    }, 30 * 60 * 1000);
+    }, 60 * 60 * 1000);
 
     let doOnce = true;
     setChildrenColor();
