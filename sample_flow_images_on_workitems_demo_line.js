@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Images on DEVOPS - DEMO SAMPLE FLOW
 // @namespace    https://makeworkflow.de
-// @version      1.4
+// @version      1.4.1
 // @description  Inserts an image from a specified Workitemfield into a the specific workitem on a the kanban board page from production.flow
 // @match        https://dev.azure.com/MWF-Demo-Line/sample.flow
 // @match        https://dev.azure.com/MWF-Demo-Line/sample.flow/_boards/board/t/*
