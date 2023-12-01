@@ -220,13 +220,13 @@
     setInterval(function() {
         console.log("Auto Updated pictures on workitems");
         autoUpdate();
-    }, 1 * 5 * 1000);
+    }, 5 * 60 * 1000);
 
     // Reload all every hour
     setInterval(function() {
         console.log("Reload whole page");
         location.reload(true)
-    }, 30 * 60 * 1000);
+    }, 60 * 60 * 1000);
 
     let doOnce = true;
     setChildrenColor();
