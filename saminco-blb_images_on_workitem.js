@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Images on DEVOPS - Saminco - BLB
 // @namespace    https://makeworkflow.de
-// @version      1.2.4
+// @version      1.2.5
 // @description  Inserts an image from a specified Workitemfield into a the specific workitem on a the kanban board page from production.flow
 // @match        https://dev.azure.com/MWF-Development-Boards/Saminco-BLB
 // @match        https://dev.azure.com/MWF-Development-Boards/Saminco-BLB/_boards/board/t/*
@@ -266,13 +266,13 @@
     setInterval(function() {
         console.log("Auto Updated pictures on workitems");
         autoUpdate();
-    }, 1 * 5 * 1000);
+    }, 5 * 60 * 1000);
 
     // Reload all every hour
     setInterval(function() {
         console.log("Reload whole page");
         location.reload(true)
-    }, 30 * 60 * 1000);
+    }, 60 * 60 * 1000);
 
     let doOnce = true;
     setChildrenColor();
