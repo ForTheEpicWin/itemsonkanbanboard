@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Images on DEVOPS - Saminco - BLB
 // @namespace    https://makeworkflow.de
-// @version      1.2.7
+// @version      1.2.8
 // @description  Inserts an image from a specified Workitemfield into a the specific workitem on a the kanban board page from production.flow
 // @match        https://dev.azure.com/MWF-Development-Boards/Saminco-BLB
 // @match        https://dev.azure.com/MWF-Development-Boards/Saminco-BLB/_boards/board/t/*
@@ -30,7 +30,7 @@
 
     // WORDS TO TRANSLATE 
     const translationDictionary = {
-        "CUSTOM07": "颜色||COLORWAY",
+        "CUSTOM07": "颜色||COLOR",
         "CUSTOM08": "序列号||S/N NUM",
         "ORDER QTY": "订单数量||ORDER QTY",
         "SIZE_": "码数||SIZE ",
