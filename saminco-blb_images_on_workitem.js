@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         Images on DEVOPS - Saminco - BLB
 // @namespace    https://makeworkflow.de
-// @version      1.3.0
+// @version      1.3.1
 // @description  Inserts an image from a specified Workitemfield into a the specific workitem on a the kanban board page from production.flow
 // @match        https://dev.azure.com/MWF-Development-Boards/Saminco-BLB
 // @match        https://dev.azure.com/MWF-Development-Boards/Saminco-BLB/_boards/board/t/*
-// @match        https://dev.azure.com/MWF-Development-Boards/Saminco
-// @match        https://dev.azure.com/MWF-Development-Boards/Saminco/_boards/board/t/*
+// @match        https://dev.azure.com/Saminco/B.L.B FOOTWEAR PRODUCTION
+// @match        https://dev.azure.com/Saminco/B.L.B FOOTWEAR PRODUCTION/_boards/board/t/*
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @copyright    MAKE WORK FLOW GmbH
