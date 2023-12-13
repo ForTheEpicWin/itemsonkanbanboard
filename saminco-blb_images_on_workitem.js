@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Images on DEVOPS - Saminco - BLB
 // @namespace    https://makeworkflow.de
-// @version      1.3.5
+// @version      1.3.6
 // @description  Inserts an image from a specified Workitemfield into a the specific workitem on a the kanban board page from production.flow
 // @match        https://dev.azure.com/MWF-Development-Boards/Saminco-BLB
 // @match        https://dev.azure.com/MWF-Development-Boards/Saminco-BLB/_boards/board/t/*
@@ -38,7 +38,7 @@
         "COLOR": "颜色||COLOR",
         "SIZE_": "码数||SIZE ",
         "SIZE QTY": "码数/数量||SIZE QTY",
-        "WIP QTY": "生产中的数量||WIP QTY",
+        "WIP QTY": "数量||WIP QTY",
         "ETD": "交货日期||ETD"
     };
 
