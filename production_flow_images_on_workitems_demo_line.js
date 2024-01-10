@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Images on DEVOPS - DEMO PRODUCTION FLOW
 // @namespace    https://makeworkflow.de
-// @version      1.8.4
+// @version      1.8.5
 // @description  Inserts an image from a specified Workitemfield into a the specific workitem on a the kanban board page from production.flow
 // @match        https://dev.azure.com/MWF-Demo-Line/production.flow
 // @match        https://dev.azure.com/MWF-Demo-Line/production.flow/_boards/board/t/*
@@ -11,10 +11,14 @@
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // @copyright    MAKE WORK FLOW GmbH
 // @author       Feiko Bronsveld
+// @sandbox      JavaScript
 // @unwrap
+
 // ==/UserScript==
 
 (function() {
+    'use strict';
+
     // ON IMAGE FIELD FOUND
     let imageFieldLabel = 'div.label.text-ellipsis:contains("IMAGE URL")';
     let imageFieldParent = 'div.editable-field.value.not-editing';
@@ -30,6 +34,96 @@
     // SET small size to big size
     let sizeField = 'div.label.text-ellipsis:contains("SIZE_")';
     let custom06 = 'div.label.text-ellipsis:contains("CUSTOM06")';
+
+    // ExtensionCache DB setup
+    const dbName = "ExtensionCacheDB";
+    const storeName = "images";
+    let db;
+
+    // OPEN DB CONNECTION
+    const openDB = () => {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(dbName, 1);
+
+            request.onupgradeneeded = function(event) {
+                db = event.target.result;
+                if (!db.objectStoreNames.contains(storeName)) {
+                    db.createObjectStore(storeName, { keyPath: "url" });
+                }
+            };
+
+            request.onsuccess = function(event) {
+                db = event.target.result;
+                resolve(db);
+            };
+
+            request.onerror = function(event) {
+                console.error("IndexedDB error:", event.target.errorCode);
+                reject(event.target.errorCode);
+            };
+        });
+    };
+
+    // CACHE IMAGE
+    const cacheImage = (url, callback) => {
+        fetch(url)
+            .then(response => {
+            if (!response.ok) {
+                throw new Error(`Network response was not ok, status: ${response.status}`);
+            }
+
+            // Check if the content type of the response is suitable for blob conversion
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("image")) {
+                throw new Error(`Response is not an image, content type: ${contentType}`);
+            }
+
+            return response.blob();
+        })
+            .then(blob => {
+            // Blob conversion should be successful here
+            const transaction = db.transaction([storeName], "readwrite");
+            const store = transaction.objectStore(storeName);
+            var putRequest = store.put({ url: url, data: blob });
+
+            putRequest.onsuccess = function() {
+                console.log("Image cached successfully");
+                if (typeof callback === "function") {
+                    const URLObject = window.URL || window.webkitURL;
+                    const imageURL = URLObject.createObjectURL(blob);
+                    callback(imageURL);
+                }
+            };
+
+            putRequest.onerror = function(event) {
+                console.log("Error caching image:", event.target.error);
+            };
+        })
+            .catch(error => console.error('Error during fetching and caching:', error));
+    };
+
+    const retrieveImage = (url, callback) => {
+        const transaction = db.transaction([storeName]);
+        const store = transaction.objectStore(storeName);
+        const request = store.get(url);
+
+        request.onsuccess = function(event) {
+            if (event.target.result) {
+                const URLObject = window.URL || window.webkitURL;
+                const imageURL = URLObject.createObjectURL(event.target.result.data);
+                callback(imageURL);
+            } else {
+                cacheImage(url, callback);
+            }
+        };
+
+        request.onerror = function(event) {
+            console.error('Error in retrieving from cache:', event);
+        };
+    };
+
+    // Initialize IndexedDB
+    openDB();
 
     // TEST IF URL IS VALID IMAGE
     function testImageUrl(url) {
@@ -48,47 +142,48 @@
         });
     }
 
+    function updateImageElement(imageElement, src, jNode) {
+        if (!imageElement.length) {
+            let img = document.createElement("img");
+            img.src = src;
+            img.width = 75;
+            img.height = 75;
+            img.style.marginRight = "auto";
+            img.className = "workItemPictures";
+            jNode.parent().parent().prev().children(':first').prepend(img);
+        } else {
+            imageElement.attr('src', src);
+        }
+        jNode.parent().hide();
+    }
+
     // ON IMAGE FIELD FOUND
-    'use strict';
     function onImageFieldFound(jNode) {
         var imageURL = jNode.next(imageFieldParent).find(imageFieldValueElement).text();
         var image = jNode.parent().parent().find("img");
 
-        // CHECK IF IMAGEURL IS VALID IMAGE
-        testImageUrl(imageURL).then(function(isValidImage) {
-            if (isValidImage) {
-                // check if the WORKITEM already has an image
-                if (image.length) {
-                    //  already image loaded, dont do anything, HIDE IMG FIELD AND VALUE
-                    jNode.parent().hide();
-                    return;
-                } else {
-                    // Create an img element and set its src attribute to the image URL
-                    let img = document.createElement("img");
-                    img.src = imageURL;
-                    img.width = 75;
-                    img.height = 75;
-                    img.style.marginRight = "auto";
-                    img.className = "workItemPictures";
+        if (!imageURL || !testImageUrl(imageURL)) {
+            console.log("Invalid or empty IMAGE URL, skipping fetch and cache.");
+            image.remove();
+            return;
+        }
 
-                    // Append the img element to the correct WorkItem Element
-                    jNode.parent().parent().prev().children(':first').prepend(img);
-                    // hide the imageURL field label and value
-                    jNode.parent().hide();
-                }
+        retrieveImage(imageURL, function(cachedSrc) {
+            if (cachedSrc) {
+                updateImageElement(image, cachedSrc, jNode);
             } else {
-                // NO VALID LINK OR EMPTY FIELD REMOVE IMAGE
-                image.remove();
-                return;
+                cacheImage(imageURL, function(blob) {
+                    const URLObject = window.URL || window.webkitURL;
+                    const imageURL = URLObject.createObjectURL(blob);
+                    updateImageElement(image, imageURL, jNode);
+                });
             }
         });
     }
     waitForKeyElements(imageFieldLabel, onImageFieldFound);
 
     // ON IMAGE FIELD UPDATE
-    'use strict';
     function onImageFieldUpdate(jNode) {
-        // FORCE UPDATE BEFORE SHOWING FIELDS
         autoUpdate();
 
         // get all buttons
@@ -134,7 +229,6 @@
     waitForKeyElements(onOpenItemImageFieldElement, onImageFieldUpdate);
 
     // ON OPEN ITEM CHANGE DATES
-    'use strict';
     function onOpenItemChangeDates(jNode) {
         let datetimeValue = jNode.attr('datetime');
         let dateTime = new Date(datetimeValue);
@@ -144,14 +238,12 @@
     waitForKeyElements(onOpenItemDates, onOpenItemChangeDates);
 
     // ON SMALL SIZE MAKE CAPITALS
-    'use strict';
     function onSizeFieldFound(jNode) {
         jNode.text("SIZE");
     }
     waitForKeyElements(sizeField, onSizeFieldFound);
 
     // ON SMALL SIZE MAKE CAPITALS
-    'use strict';
     function onCustom06field(jNode) {
         jNode.text("NAME");
     }
@@ -231,22 +323,11 @@
         }
     }
 
-    function delayedFunction() {
-        // Code to be executed after 200ms
-        console.log('Delayed function executed!');
-    }
-
-    // Reload all the image and its fields every 5 minutes
-    setInterval(function() {
-        console.log("Auto Updated pictures on workitems");
-        autoUpdate();
-    }, 5 * 60 * 1000);
-
-    // Reload all every 60 minutes / 1 hour
+    // Reload all every 10 minutes
     setInterval(function() {
         console.log("Reload whole page");
-        location.reload(true)
-    }, 60 * 60 * 1000);
+        location.reload()
+    }, 10 * 60 * 1000);
 
     let doOnce = true;
     setChildrenColor();
